@@ -153,7 +153,8 @@ function show() {
   $('prev').disabled = idx === 0; $('next').disabled = idx === deck.slides.length - 1;
   // Canva often puts the link on a tiny word ("video"), so grow small boxes into an easy tap target
   const MW = 12, MH = 9;
-  $('hots').innerHTML = s.links.map(l => {
+  // biggest boxes first so smaller, more specific links sit on top
+  $('hots').innerHTML = [...s.links].sort((a, b) => b.w * b.h - a.w * a.h).map(l => {
     const small = l.w < MW || l.h < MH, w = Math.max(l.w, MW), h = Math.max(l.h, MH);
     const x = Math.min(Math.max(l.x + l.w / 2 - w / 2, 0), 100 - w), y = Math.min(Math.max(l.y + l.h / 2 - h / 2, 0), 100 - h);
     return `<a class="hot${small ? ' small' : ''}" href="${l.url}" target="_blank" rel="noopener" title="${label(l.url)[0]}: ${label(l.url)[1]}" style="left:${x}%;top:${y}%;width:${w}%;height:${h}%"></a>`;
