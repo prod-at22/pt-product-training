@@ -35,8 +35,14 @@ body.v .home{display:none}body.v .viewer{display:block}
 .btn:disabled{opacity:.4;cursor:default}
 .stage{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;border:1px solid var(--line);touch-action:pan-y}
 .stage img{width:100%;height:100%;display:block;object-fit:contain;user-select:none;-webkit-user-drag:none}
-.hot{position:absolute;display:block;border-radius:6px;outline:2px dashed transparent;transition:outline-color .15s,background .15s}
-.hot:hover,.hot:focus-visible{outline-color:var(--tt);background:rgba(254,44,85,.08)}
+.hot{position:absolute;display:block;border-radius:8px;outline:2px dashed transparent;transition:outline-color .15s,background .15s;z-index:2}
+.hot:hover,.hot:focus-visible{outline-color:var(--tt);background:rgba(254,44,85,.10)}
+.hot.small{outline-color:rgba(254,44,85,.55);background:rgba(254,44,85,.06)}
+.hot.small::after{content:"▶";position:absolute;right:-10px;top:-10px;width:22px;height:22px;border-radius:50%;background:var(--tt);color:#fff;font-size:10px;display:grid;place-items:center;box-shadow:0 0 0 0 rgba(254,44,85,.6);animation:pulse 1.8s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 10px rgba(254,44,85,0)}100%{box-shadow:0 0 0 0 rgba(254,44,85,0)}}
+.ttbtn{position:absolute;right:2%;bottom:3%;z-index:3;display:inline-flex;align-items:center;gap:8px;background:var(--tt);color:#fff;text-decoration:none;font-weight:800;font-size:clamp(12px,1.6vw,16px);padding:clamp(6px,1vw,10px) clamp(10px,1.6vw,16px);border-radius:99px;box-shadow:0 4px 16px rgba(0,0,0,.35)}
+.ttbtn:hover{filter:brightness(1.1)}
+.ttbtn small{font-weight:600;opacity:.85}
 .nav{position:absolute;top:0;bottom:0;width:12%;border:0;background:transparent;cursor:pointer;z-index:0}
 .nav.p{left:0}.nav.n{right:0}
 .counter{color:var(--mute);font-size:13px;min-width:64px;text-align:center}
@@ -145,8 +151,16 @@ function show() {
   $('slide').alt = `${deck.title}, slide ${idx + 1}`;
   $('count').textContent = `${idx + 1} / ${deck.slides.length}`;
   $('prev').disabled = idx === 0; $('next').disabled = idx === deck.slides.length - 1;
-  $('hots').innerHTML = s.links.map(l => `<a class="hot" href="${l.url}" target="_blank" rel="noopener" title="${label(l.url)[0]}: ${label(l.url)[1]}" style="left:${l.x}%;top:${l.y}%;width:${l.w}%;height:${l.h}%"></a>`).join('');
+  // Canva often puts the link on a tiny word ("video"), so grow small boxes into an easy tap target
+  const MW = 12, MH = 9;
+  $('hots').innerHTML = s.links.map(l => {
+    const small = l.w < MW || l.h < MH, w = Math.max(l.w, MW), h = Math.max(l.h, MH);
+    const x = Math.min(Math.max(l.x + l.w / 2 - w / 2, 0), 100 - w), y = Math.min(Math.max(l.y + l.h / 2 - h / 2, 0), 100 - h);
+    return `<a class="hot${small ? ' small' : ''}" href="${l.url}" target="_blank" rel="noopener" title="${label(l.url)[0]}: ${label(l.url)[1]}" style="left:${x}%;top:${y}%;width:${w}%;height:${h}%"></a>`;
+  }).join('');
   const uniq = [...new Set(s.links.map(l => l.url))];
+  const tts = uniq.filter(u => u.includes('tiktok'));
+  if (tts.length) $('hots').innerHTML += `<a class="ttbtn" href="${tts[0]}" target="_blank" rel="noopener">▶ TikTok${tts.length > 1 ? ` <small>+${tts.length - 1}</small>` : ''}</a>`;
   $('links').innerHTML = uniq.map(u => { const [a, b, c, i] = label(u); return `<a class="lk ${c}" href="${u}" target="_blank" rel="noopener"><span class="ic">${i}</span><span class="t"><b>${c === 'tiktok' ? 'Watch on TikTok' : 'Open ' + a}</b><span>${b}</span></span></a>`; }).join('');
   $('strip').querySelectorAll('button').forEach((b, i) => b.classList.toggle('on', i === idx));
   $('strip').children[idx]?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
