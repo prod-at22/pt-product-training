@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PT Product Training · ARBA Travel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0b1622;--panel:#122233;--line:#1f3449;--ink:#eef3f8;--mute:#93a7bb;--acc:#25c2a0;--tt:#fe2c55}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Plus Jakarta Sans",system-ui,sans-serif}
+a{color:inherit}
+header{padding:28px 16px 8px;max-width:1180px;margin:0 auto;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+header .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);font-weight:700}
+header h1{margin:4px 0 0;font-size:clamp(26px,4vw,38px);font-weight:800;letter-spacing:-.01em}
+header p{margin:6px 0 0;color:var(--mute);font-size:14px}
+.home{max-width:1180px;margin:0 auto;padding:16px 16px 48px;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;display:flex;flex-direction:column;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-3px);border-color:var(--acc)}
+.card img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:#000}
+.card .meta{padding:14px 16px 16px}
+.card h2{margin:0;font-size:18px}
+.card .sub{color:var(--mute);font-size:13px;margin-top:4px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chip{font-size:12px;padding:3px 9px;border-radius:99px;background:#0b1622;border:1px solid var(--line);color:var(--mute)}
+.chip.tt{color:#fff;border-color:var(--tt);background:rgba(254,44,85,.12)}
+/* viewer */
+.viewer{display:none;max-width:1180px;margin:0 auto;padding:8px 16px 40px}
+body.v .home{display:none}body.v .viewer{display:block}
+.bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.bar h2{margin:0;font-size:18px;flex:1;min-width:180px}
+.btn{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:8px 12px;font:600 13px inherit;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{border-color:var(--acc)}
+.btn:disabled{opacity:.4;cursor:default}
+.stage{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;border:1px solid var(--line);touch-action:pan-y}
+.stage img{width:100%;height:100%;display:block;object-fit:contain;user-select:none;-webkit-user-drag:none}
+.hot{position:absolute;display:block;border-radius:6px;outline:2px dashed transparent;transition:outline-color .15s,background .15s}
+.hot:hover,.hot:focus-visible{outline-color:var(--tt);background:rgba(254,44,85,.08)}
+.nav{position:absolute;top:0;bottom:0;width:12%;border:0;background:transparent;cursor:pointer;z-index:0}
+.nav.p{left:0}.nav.n{right:0}
+.counter{color:var(--mute);font-size:13px;min-width:64px;text-align:center}
+.links{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.lk{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;text-decoration:none;font-size:14px;min-width:0}
+.lk:hover{border-color:var(--acc)}
+.lk .ic{flex:none;width:28px;height:28px;border-radius:7px;display:grid;place-items:center;font-size:13px;font-weight:800;background:#0b1622}
+.lk.tiktok .ic{background:var(--tt);color:#fff}
+.lk .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.lk .t b{display:block;font-size:13px}
+.lk .t span{color:var(--mute);font-size:12px}
+.strip{display:flex;gap:8px;overflow-x:auto;margin-top:16px;padding-bottom:6px}
+.strip button{flex:none;width:120px;padding:0;border:2px solid transparent;border-radius:6px;overflow:hidden;cursor:pointer;background:#000;position:relative}
+.strip button.on{border-color:var(--acc)}
+.strip img{width:100%;display:block}
+.strip .dot{position:absolute;top:4px;right:4px;background:var(--tt);color:#fff;font-size:10px;font-weight:800;border-radius:99px;padding:1px 6px}
+.stage:fullscreen{border-radius:0;border:0;aspect-ratio:auto}
+footer{color:var(--mute);font-size:12px;text-align:center;padding:0 16px 28px}
+@media (max-width:640px){.strip button{width:88px}.bar h2{font-size:16px}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="eyebrow">ARBA Travel · Private Tour</div>
+    <h1>PT Product Training</h1>
+    <p>Product training decks for TCs. Tap a deck to open it. TikTok videos on the slides are clickable.</p>
+  </div>
+</header>
+
+<main class="home" id="home"></main>
+
+<section class="viewer" id="viewer">
+  <div class="bar">
+    <a class="btn" href="#">← All decks</a>
+    <h2 id="vtitle"></h2>
+    <button class="btn" id="prev" aria-label="Previous slide">‹</button>
+    <span class="counter" id="count"></span>
+    <button class="btn" id="next" aria-label="Next slide">›</button>
+    <button class="btn" id="fs" aria-label="Full screen">⛶</button>
+  </div>
+  <div class="stage" id="stage">
+    <img id="slide" alt="">
+    <button class="nav p" id="navp" aria-label="Previous slide"></button>
+    <button class="nav n" id="navn" aria-label="Next slide"></button>
+    <div id="hots"></div>
+  </div>
+  <div class="links" id="links"></div>
+  <div class="strip" id="strip"></div>
+</section>
+
+<footer>Updated 28 Oct 2026 · Source: Canva decks by Product R&amp;D ARBA Travel</footer>
+
+<script>
+const $ = s => document.getElementById(s);
+const pad = n => String(n).padStart(2, '0');
+const host = u => { try { return new URL(u).hostname.replace(/^www\.|^my\.|^ms\./, '') } catch { return u } };
+const label = u => {
+  const h = host(u);
+  if (h.includes('tiktok')) { const m = u.match(/@([^/]+)/); return ['TikTok', m ? '@' + m[1] : 'Video', 'tiktok', '▶'] }
+  if (h.includes('youtube')) return ['YouTube', 'Video', 'yt', '▶'];
+  if (h.includes('agoda')) return ['Agoda', 'Hotel page', '', 'A'];
+  if (h.includes('trip.com')) return ['Trip.com', 'Page', '', 'T'];
+  if (h.includes('klook')) return ['Klook', 'Activity', '', 'K'];
+  if (h.includes('wikipedia')) return ['Wikipedia', decodeURIComponent(u.split('/').pop()).replace(/_/g, ' '), '', 'W'];
+  return [h, 'Link', '', '↗'];
+};
+let decks = [], deck = null, idx = 0;
+
+fetch('decks.json').then(r => r.json()).then(d => { decks = d; renderHome(); route(); });
+
+function renderHome() {
+  $('home').innerHTML = decks.map(d => {
+    const all = d.slides.flatMap(s => s.links.map(l => l.url));
+    const tt = new Set(all.filter(u => u.includes('tiktok'))).size;
+    return `<a class="card" href="#${d.slug}/1">
+      <img src="slides/${d.slug}/t01.jpg" alt="" loading="lazy">
+      <div class="meta"><h2>${d.title}</h2><div class="sub">${d.sub}</div>
+      <div class="chips"><span class="chip">${d.slides.length} slides</span>${tt ? `<span class="chip tt">▶ ${tt} TikTok</span>` : ''}${all.length - tt > 0 ? `<span class="chip">${new Set(all).size - tt} other links</span>` : ''}</div></div></a>`;
+  }).join('');
+}
+
+function route() {
+  const [slug, n] = location.hash.slice(1).split('/');
+  const d = decks.find(x => x.slug === slug);
+  if (!d) { deck = null; document.body.classList.remove('v'); document.title = 'PT Product Training · ARBA Travel'; return; }
+  if (deck !== d) { deck = d; buildStrip(); }
+  idx = Math.min(Math.max((parseInt(n) || 1) - 1, 0), d.slides.length - 1);
+  document.body.classList.add('v');
+  show();
+}
+
+function buildStrip() {
+  $('vtitle').textContent = deck.title;
+  document.title = deck.title + ' · PT Product Training';
+  $('strip').innerHTML = deck.slides.map((s, i) => {
+    const n = s.links.filter(l => l.url.includes('tiktok')).length;
+    return `<button data-i="${i}" aria-label="Slide ${i + 1}"><img src="slides/${deck.slug}/t${pad(i + 1)}.jpg" loading="lazy" alt="">${n ? '<span class="dot">▶</span>' : ''}</button>`;
+  }).join('');
+  $('strip').querySelectorAll('button').forEach(b => b.onclick = () => go(+b.dataset.i));
+}
+
+function show() {
+  const s = deck.slides[idx];
+  $('slide').src = `slides/${deck.slug}/${pad(idx + 1)}.jpg`;
+  $('slide').alt = `${deck.title}, slide ${idx + 1}`;
+  $('count').textContent = `${idx + 1} / ${deck.slides.length}`;
+  $('prev').disabled = idx === 0; $('next').disabled = idx === deck.slides.length - 1;
+  $('hots').innerHTML = s.links.map(l => `<a class="hot" href="${l.url}" target="_blank" rel="noopener" title="${label(l.url)[0]}: ${label(l.url)[1]}" style="left:${l.x}%;top:${l.y}%;width:${l.w}%;height:${l.h}%"></a>`).join('');
+  const uniq = [...new Set(s.links.map(l => l.url))];
+  $('links').innerHTML = uniq.map(u => { const [a, b, c, i] = label(u); return `<a class="lk ${c}" href="${u}" target="_blank" rel="noopener"><span class="ic">${i}</span><span class="t"><b>${c === 'tiktok' ? 'Watch on TikTok' : 'Open ' + a}</b><span>${b}</span></span></a>`; }).join('');
+  $('strip').querySelectorAll('button').forEach((b, i) => b.classList.toggle('on', i === idx));
+  $('strip').children[idx]?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+  [idx + 1, idx + 2].forEach(n => { if (n < deck.slides.length) new Image().src = `slides/${deck.slug}/${pad(n + 1)}.jpg`; });
+}
+
+function go(i) { if (!deck) return; i = Math.min(Math.max(i, 0), deck.slides.length - 1); history.replaceState(null, '', `#${deck.slug}/${i + 1}`); idx = i; show(); }
+$('prev').onclick = $('navp').onclick = () => go(idx - 1);
+$('next').onclick = $('navn').onclick = () => go(idx + 1);
+$('fs').onclick = () => document.fullscreenElement ? document.exitFullscreen() : $('stage').requestFullscreen?.();
+addEventListener('hashchange', route);
+addEventListener('keydown', e => {
+  if (!deck) return;
+  if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); go(idx + 1); }
+  if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); go(idx - 1); }
+  if (e.key === 'Escape' && !document.fullscreenElement) location.hash = '';
+});
+let x0 = null;
+$('stage').addEventListener('touchstart', e => x0 = e.touches[0].clientX, { passive: true });
+$('stage').addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 50) go(idx + (dx < 0 ? 1 : -1)); x0 = null; });
+</script>
+</body>
+</html>
